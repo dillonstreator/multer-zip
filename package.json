@@ -1,7 +1,7 @@
 {
 	"name": "multer-zip",
 	"version": "1.0.0",
-	"description": "utility for zipping uploaded files",
+	"description": "Promise based multer file upload zipping utility",
 	"main": "dist/index.js",
 	"types": "dist/index.d.ts",
 	"scripts": {
