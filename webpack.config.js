@@ -2,6 +2,7 @@ const webpack = require("webpack");
 const path = require("path");
 
 module.exports = ({ mode }) => ({
+	target: 'node',
 	entry: path.resolve("./src/index.ts"),
 	mode,
 	output: {
@@ -11,6 +12,9 @@ module.exports = ({ mode }) => ({
 	},
 	resolve: {
 		extensions: [".ts", ".tsx", ".js"]
+	},
+	externals: {
+		"archiver": "archiver",
 	},
 	module: {
 		rules: [{ test: /\.ts(x?)$/, loader: "ts-loader" }]

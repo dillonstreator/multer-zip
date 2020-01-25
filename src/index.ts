@@ -7,13 +7,15 @@ export default ({
 	dest,
 	zipname,
 	format = "zip",
-	level = 9
+	level = 9,
+	filenamer
 }: {
-	files: [{ buffer: Buffer, originalname: string }];
+	files: [{ buffer: Buffer; originalname: string, filename: string, size: Number }];
 	dest: string;
 	zipname: string;
 	format: "zip" | "tar";
 	level: Number;
+	filenamer: ({ originalname, filename, size }: { originalname: string, filename: string, size: Number }) => string;
 }): Promise<any> => {
 	return new Promise((resolve, reject) => {
 		const output = fs.createWriteStream(path.join(dest, zipname));
@@ -35,8 +37,12 @@ export default ({
 
 		archive.pipe(output);
 
-		files.forEach(({ buffer, originalname }) => {
-			archive.append(buffer, { name: originalname });
+		files.forEach(({ buffer, originalname, filename, size }) => {
+			const name =
+				typeof filenamer === "function"
+					? filenamer({ originalname, filename, size })
+					: originalname;
+			archive.append(buffer, { name });
 		});
 
 		archive.finalize();
