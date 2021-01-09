@@ -8,7 +8,7 @@
 const path = require("path");
 
 const express = require("express");
-const zipper = require("multer-zip");
+const zipper = require("multer-zip").default;
 const multer = require("multer");
 const upload = multer(/* ... multer opts ... */);
 const app = express();
