@@ -1,39 +1,56 @@
-import fs from "fs";
-import path from "path";
+import fs from "node:fs";
+import path from "node:path";
+import stream from "node:stream";
 import archiver from "archiver";
 
-export default ({
+type File = {
+	buffer: Buffer;
+	originalname: string;
+	filename: string;
+	size: number;
+}
+
+type MulterZipOpts = {
+	files: File[];
+	dest: string | stream.Writable;
+	zipname: string;
+	format: "zip" | "tar";
+	level: number;
+	filenamer: ({ originalname, filename, size }: Omit<File, "buffer">) => string;
+}
+
+const multerZip = ({
 	files,
 	dest,
 	zipname,
 	format = "zip",
 	level = 9,
 	filenamer
-}: {
-	files: [{ buffer: Buffer; originalname: string, filename: string, size: Number }];
-	dest: string;
-	zipname: string;
-	format: "zip" | "tar";
-	level: Number;
-	filenamer: ({ originalname, filename, size }: { originalname: string, filename: string, size: Number }) => string;
-}): Promise<any> => {
+}: MulterZipOpts): Promise<void> => {
 	return new Promise((resolve, reject) => {
-		const output = fs.createWriteStream(path.join(dest, zipname));
 		const archive = archiver(format, {
 			zlib: { level }
 		});
 
-		archive.on("warning", function(err: any) {
+		archive.on("warning", function (err: any) {
 			if (err.code !== "ENOENT") reject(err);
 		});
 
-		archive.on("error", function(err: any) {
+		archive.on("error", function (err: any) {
 			reject(err);
 		});
 
-		archive.on("finish", function() {
+		archive.on("finish", function () {
 			resolve();
 		});
+
+		let output: stream.Writable;
+
+		if (typeof dest === "string") {
+			output = fs.createWriteStream(path.join(dest, zipname));
+		} else {
+			output = dest;
+		}
 
 		archive.pipe(output);
 
@@ -48,3 +65,5 @@ export default ({
 		archive.finalize();
 	});
 };
+
+export default multerZip;

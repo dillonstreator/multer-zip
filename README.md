@@ -19,7 +19,7 @@ app.post("/", upload.array("documents", 5), (req, res) => {
 	const { files } = req;
 	const dest = path.join(__dirname, "uploads");
 	const zipname = `files_${Math.random()}.zip`;
-	const filenamer = ({ originalname }) => `${new Date().getTime()}_${originalname}`; 
+	const filenamer = ({ originalname }) => `${new Date().getTime()}_${originalname}`;
 	zipper({ files, dest, zipname, filenamer })
 		.then(() => {
 			console.log("successfully zipped files");
@@ -31,6 +31,18 @@ app.post("/", upload.array("documents", 5), (req, res) => {
 	res.send("zipping...");
 });
 
+app.post("/streamable", upload.array("documents", 5), (req, res) => {
+	const { files } = req;
+	const filenamer = ({ originalname }) => `${new Date().getTime()}_${originalname}`;
+	zipper({ files, dest: res, filenamer })
+		.then(() => {
+			console.log("successfully zipped files");
+		})
+		.catch(error => {
+			console.log(error);
+		});
+});
+
 const PORT = process.env.PORT || 3000;
 app.listen(PORT => console.log(`listening on port ${PORT}`));
 ```
@@ -40,6 +52,6 @@ app.listen(PORT => console.log(`listening on port ${PORT}`));
 Key | Description | Note
 --- | --- | ---
 `files` | Multer files array | **\*Must contain buffers**
-`dest` | Destination of zipped files |
+`dest` | Destination of zipped files or `stream.Writable` |
 `zipname` | Name of zipped files |
 `filenamer` | Optional function to change name of file |

@@ -1,12 +1,11 @@
 {
 	"name": "multer-zip",
-	"version": "1.1.0",
+	"version": "1.2.0",
 	"description": "Promise based multer file upload zipping utility",
 	"main": "dist/index.js",
 	"types": "dist/index.d.ts",
 	"scripts": {
-		"build:prod": "webpack --env.mode production",
-		"build:dev": "webpack --env.mode development"
+		"build": "tsc"
 	},
 	"repository": "https://github.com/DillonStreator/multer-zip",
 	"keywords": [
@@ -19,15 +18,11 @@
 	"author": "Dillon Streator",
 	"license": "ISC",
 	"devDependencies": {
-		"@types/node": "^13.5.0",
-		"@types/react": "^16.9.9",
-		"react": "^16.10.2",
-		"ts-loader": "^6.2.0",
-		"typescript": "^3.6.4",
-		"webpack": "^4.41.2",
-		"webpack-cli": "^3.3.9"
+		"@types/archiver": "^5.3.1",
+		"@types/node": "18.11.11",
+		"typescript": "4.9.3"
 	},
 	"dependencies": {
-		"archiver": "^3.1.1"
+		"archiver": "5.3.1"
 	}
 }
